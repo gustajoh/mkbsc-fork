@@ -87,7 +87,7 @@ def consistent(states):
         res = res.intersection(state[0])
     return res
     
-def iterate_until_isomorphic(G, limit=-1, print_size=False, verbose=True):
+def iterate_until_isomorphic(G, limit=-1, print_size=False, verbose=True, sizelimit = -1):
     """Iterate the MKBSC until the graph stabilizes or the limit is reached. Returns a log of graph sizes, the final game and whether the final game is stabilized
     
     G -- the game to begin with
@@ -122,11 +122,11 @@ def iterate_until_isomorphic(G, limit=-1, print_size=False, verbose=True):
     
     p(0, len(G.states))
 
-    while limit == -1 or i < limit:
+    while (limit == -1 or i < limit) and (sizelimit == -1 or len(current.states) < sizelimit):
         currentK = current.KBSC()
+
         i += 1
-        
-        if len(current.states) == len(currentK.states) and current.isomorphic(currentK):
+        if len(current.states) == len(currentK.states) and current.isomorphic(currentK, consider_observations=True):
             if current.isomorphic(currentK, consider_observations=True):
                 last_iso = 2
                 p(i, len(currentK.states), 2)
@@ -137,8 +137,8 @@ def iterate_until_isomorphic(G, limit=-1, print_size=False, verbose=True):
         else:
             last_iso = 0
             p(i, len(currentK.states))
-        
         current = currentK
-    
+
+
     return log, current, last_iso
 

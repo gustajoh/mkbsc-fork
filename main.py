@@ -1,33 +1,23 @@
-#!/usr/bin/env python3
+from mkbsc import MultiplayerGame, iterate_until_isomorphic
+from parse import parse
+import json
+with open('gamesbugfix.txt') as f:
+    file = open('analysedgames.txt', 'w')
+    count = 0
+    pos = 1
+    for line in f:
+        game = json.loads(line)
+        ##iterate mkbscsc acncaioncancand write
+        print(pos)
+        pos += 1
+        # remember kinda yikes in iterate_until_isomorphic with consider_observations=True
+        G = parse(game)
 
-from mkbsc import MultiplayerGame, iterate_until_isomorphic, \
-                  export, to_string, from_string, to_file, from_file
+        #check if game stabilises
+        result = iterate_until_isomorphic(G, limit=-1, print_size=False, verbose=False, sizelimit=500)
+        result['stabilises'] = result[-1]
+        if(result["stabilises"] > 0): count += 1
+        json.dump(result, file)
+        file.write('\n')
 
-#states
-L = [0, 1, 2]
-#initial state
-L0 = 0
-#action alphabet
-Sigma = (("w", "p"), ("w", "p"))
-#action labeled transitions
-Delta = [
-    (0, ("p", "p"), 0), (0, ("w", "w"), 0),
-    (0, ("w", "p"), 1), (0, ("p", "w"), 2),
-    (1, ("p", "p"), 1), (1, ("w", "w"), 1),
-    (1, ("w", "p"), 2), (1, ("p", "w"), 0),
-    (2, ("p", "p"), 2), (2, ("w", "w"), 2),
-    (2, ("w", "p"), 0), (2, ("p", "w"), 1)
-]
-#observation partitioning
-Obs = [
-    [[0, 1], [2]],
-    [[0, 2], [1]]
-]
-
-#G is a MultiplayerGame-object, and so are GK and GK0
-G = MultiplayerGame.create(L, L0, Sigma, Delta, Obs)
-GK = G.KBSC()
-GK0 = GK.project(0)
-
-#export the GK game to ./pictures/GK.png
-export(GK, "GK")
+    print(count)
