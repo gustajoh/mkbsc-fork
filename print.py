@@ -35,4 +35,4 @@ def printpng(file):
     print("hi")
 
 
-printpng('generatedgames.txt')
+printpng('analysedgames.txt')
