@@ -2,6 +2,7 @@ from mkbsc import export
 from parse import parse
 import os
 import json
+import shutil
 
 
 def printpng(file):
@@ -9,6 +10,10 @@ def printpng(file):
     index1 = 1
     index2 = 1
     f = open(file, 'r')
+
+    if os.path.isdir("pictures/basegame"):
+        shutil.rmtree("pictures/basegame") #deletes previous folders with pictures
+
     os.mkdir("pictures/basegame")
     for line in f:
         data = json.loads(line)
@@ -30,4 +35,4 @@ def printpng(file):
     print("hi")
 
 
-printpng('cartesiangames.txt')
+printpng('generatedgames.txt')

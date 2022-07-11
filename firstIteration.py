@@ -3,8 +3,8 @@ from parse import parse
 import json
 
 def firstIteration():
-    with open('50k3games.txt') as f:
-        file = open('GK1only.txt', 'w')
+    with open('generatedgames.txt') as f:
+        file = open('firstiterations.txt', 'w')
         count = 0
         pos = 1
         for line in f:
@@ -18,10 +18,10 @@ def firstIteration():
 
             data = {}
             #Konstruerar sigma
-            aleph = []
+            sigma = []
             for tuple in asd.alphabet:
-                aleph.append(''.join(tuple))
-            data["sigma"] = aleph
+                sigma.append(''.join(tuple))
+            data["sigma"] = sigma
 
             index = 0
             translator = {}
