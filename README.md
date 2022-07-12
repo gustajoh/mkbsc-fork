@@ -1,9 +1,10 @@
-# Multiplayer Knowledge Based Subset Construct
-We study a multiplayer version of the traditional KBSC and implement it in Python 3.
+# Multiplayer Knowledge Based Subset Construction Fork
 
-Authors: August Jacobsson & Helmer Nylén
+Authors: Gustaf Bergmark & Gustaf Johansson
 
-Supervisor: Dilian Gurov
+This forked version adds compatability with our [MAGIIAN game generator and statistical analysis tools.](https://github.com/gustafbergmark/MKBSC-Statistical-Analysis)
+
+An extensive description of the mkbsc implementation can be found in the [original repo](https://github.com/HelmerNylen/mkbsc) developed by August Jacobsson & Helmer Nylén
 
 ## Requirements
 This library uses the following external programs, which need to be installed for the library to work.
@@ -13,62 +14,20 @@ This library uses the following external programs, which need to be installed fo
 
 Note: the library was written for Python 3.5, NetworkX 2.1 and pydot 1.2.4. To increase the chance that everything works as intended you may wish to use those versions.
 
-## The `mkbsc` package
-### Usage example - Wagon problem
-![Game graph of the wagon proplem](pictures/G.png)
+## Our additions
 
-An example of the code in `main.py` which applies the MKBSC to the two player triangular wagon problem.
+A few but important functions were added in order to make this implementation of the MKBSC usable with our random MAGIIAN game generator.
 
-```python
-#!/usr/bin/env python3
-from mkbsc import MultiplayerGame, export
+### main.py
+In `generatedgames.txt` you will find the same set of 5 randomly generated MAGIIAN games we provided [here,](https://github.com/gustafbergmark/MKBSC-Statistical-Analysis) the idea is that you can generate a set of games with our generator and plug that file into `main.py` which will apply the MKBSC and determine whether they are stable or divergent. It will then update the `stable` value and write to `analysedgames.txt`. This will in turn make it possible to make use of the statistical analysis tools provided here https://github.com/gustafbergmark/MKBSC-Statistical-Analysis.
 
-#states
-L = [0, 1, 2]
-#initial state
-L0 = 0
-#action alphabet
-Sigma = (("w", "p"), ("w", "p"))
-#action labeled transitions
-Delta = [
-    (0, ("p", "p"), 0), (0, ("w", "w"), 0),
-    (0, ("w", "p"), 1), (0, ("p", "w"), 2),
-    (1, ("p", "p"), 1), (1, ("w", "w"), 1),
-    (1, ("w", "p"), 2), (1, ("p", "w"), 0),
-    (2, ("p", "p"), 2), (2, ("w", "w"), 2),
-    (2, ("w", "p"), 0), (2, ("p", "w"), 1)
-]
-#observation partitioning
-Obs = [
-    [[0, 1], [2]],
-    [[0, 2], [1]]
-]
+### firstIteration.py
+During our research project we felt that it might be interesting to analyse only the first expansion of MAGIIAN games, so this function takes a set of games and prints the first iteration of each game to another file. The `firstiterations.txt` file is the result when the 5 generated games provided in `generatedgames.txt` is used with the function.
 
-#G is a MultiplayerGame-object, and so are GK and GK0
-G = MultiplayerGame.create(L, L0, Sigma, Delta, Obs)
-GK = G.KBSC()
-GK0 = GK.project(0)
+### print.py
+This function looks at each game from a set of games and generates a folder with pictures of the game itself and the first 4 expansions. The generated folders are labeled in such a way that it tells you if the game is divergent or stable. **OBS!** it's very important that you have the "pictures" folder downloaded otherwise this will not work.
 
-#export the GK game to ./pictures/GK.png
-export(GK, "GK")
-```
+### parse.py
+This is a helper function which reformats the data from a generated MAGIIAN in such a way that the implemented MKBSC can be ran on it.
 
-### Behind the scenes
-A brief summary is provided below. **For full documentation and a tutorial, please refer to the [user guide](mkbsc/README.md).**
 
-The package contains definitions for a multiplayer game structure, `MultiplayerGame`. The states in the game are defined by `State`s, the transitions by `Transition`s and imperfect information is defined by an array of player-specific `Partitioning`s, which are sets of `Observation`s. The `State`s contain a tuple of each of the players' knowledge, which can be accessed by `State[player]`, where `player` is zero-indexed. When the first game is constructed it is sufficient to provide a single piece of knowledge for the states (usually an integer) which is considered to be the knowledge of all involved players.
-
-### Projection
-Multiplayer game structures can be projected to study how an individual player experiences the game. `MultiplayerGame.project(player)` project the game onto player `player`.
-
-### KBSC
-The KBSC is defined for both multi- and singleplayer games. Calling `MultiplayerGame.KBSC()` will yield a new `MultiplayerGame`. The knowledges in the states of the new game are sets of the states from the previous graph. This means that when iterating the construct (i.e. `MultiplayerGame.KBSC().KBSC()`...) the knowledge in the states of the resulting graph will form a sort of tree, where the leaves are the states of the original graph.
-
-### Rendering
-The games can be written in the DOT language by calling `MultiplayerGame.to_dot()`, and will by default color-code observations for each player. The DOT representation can be written to a file and compiled by the `dot` command in Graphviz. This is all done automatically by calling `mkbsc.export(game, filename)`, which saves and opens a PNG image.
-
-### Isomorphism
-The isomorphism of two game graphs can be checked by calling `MultiplayerGame.isomorphic(MultiplayerGame)`. The function can optionally also take the observations of each player into account.
-
-### Saving games
-Games can be saved to disk with the function `mkbsc.to_file(game, filename)`, and loaded with `game = mkbsc.from_file(filename)`. For larger games, it is recommended to skip the validation when loading the game by passing the flag `validate=False`.
