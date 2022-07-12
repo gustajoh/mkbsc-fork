@@ -21,6 +21,9 @@ A few but important functions were added in order to make this implementation of
 ### main.py
 In `generatedgames.txt` you will find the same set of 5 randomly generated MAGIIAN games we provided [here,](https://github.com/gustafbergmark/MKBSC-Statistical-Analysis) the idea is that you can generate a set of games with our generator and plug that file into `main.py` which will apply the MKBSC and determine whether they are stable or divergent. It will then update the `stable` value and write to `analysedgames.txt`. This will in turn make it possible to make use of the statistical analysis tools provided here https://github.com/gustafbergmark/MKBSC-Statistical-Analysis.
 
+### reduce.py
+This function takes a set of games and *reduces* them, meaning a component from the game graph is removed until all components in the graph are necessary for divergence. This means that reduced games are divergent and generally quite small.
+
 ### firstIteration.py
 During our research project we felt that it might be interesting to analyse only the first expansion of MAGIIAN games, so this function takes a set of games and prints the first iteration of each game to another file. The `firstiterations.txt` file is the result when the 5 generated games provided in `generatedgames.txt` is used with the function.
 
