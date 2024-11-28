@@ -1,6 +1,8 @@
-
 from parse import parse
 import json
+
+#Reads data from generated game and formats it as usable data for the implemented mkbsc algorithm
+#Returns the game data with information if it stabilises or not
 
 def firstIteration():
     with open('generatedgames.txt') as f:
@@ -9,15 +11,14 @@ def firstIteration():
         pos = 1
         for line in f:
             game = json.loads(line)
-            ##iterate mkbscsc acncaioncancand write
+            # Iterate mkbsc and write
             print(pos)
             pos += 1
-            # remember kinda yikes in iterate_until_isomorphic with consider_observations=True
             magiian = parse(game)
             asd = magiian.KBSC()
 
             data = {}
-            #Konstruerar sigma
+            # Construct sigma
             sigma = []
             for tuple in asd.alphabet:
                 sigma.append(''.join(tuple))
@@ -30,7 +31,7 @@ def firstIteration():
                 index+=1
 
 
-            #Konstruerar obs
+            # Construct obs
             obs = []
             for i in range (asd.player_count):
                 playerobs = []
@@ -43,12 +44,11 @@ def firstIteration():
 
             data["obs"] = obs
 
-            ##yea
             data["L0"] = translator[asd.initial_state]
             data["players"] = asd.player_count
             data["stabilises"] = game["stabilises"]
 
-            #Konstruerar delta
+            # Construct delta
             delta = []
             for transition in asd.transitions:
                 trans = "["
@@ -70,9 +70,5 @@ def firstIteration():
             json.dump(data, file)
             file.write('\n')
         print(count)
-
-
-#Reads data from generated game and formats it as usable data for the implemented mkbsc algorithm
-#Returns the game data with information if it stabilises or not
 
 firstIteration()

@@ -4,6 +4,7 @@ from mkbsc import multiplayer_game, iterate_until_isomorphic
 import json
 from parse import parse
 
+# Removes components from divergent game, if new game stays divergent, write new game to file
 def reduce():
     with open('generatedgames.txt') as f:
         file = open('reduced.txt', 'w')

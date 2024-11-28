@@ -14,7 +14,6 @@ def parse(data):
     Delta = data["delta"]
     Obs = data["obs"]
 
-    # Sigma will always be size 1?
     sigma = []
     for element in Sigma:
         sigma.append(tuple(element))
@@ -22,7 +21,7 @@ def parse(data):
 
     delta = []
     for element in Delta:
-        # remove a bunch of non-essential brackets, commas and '
+        # remove non-essential brackets, commas and '
         transition = str(element).replace('[', '').replace(']', '').replace("'", "").replace(",", "")
         transition = tuple([int(transition[0:1])]) + (tuple(transition[1:-1]),) + tuple([int(transition[-1:])])
         delta.append(transition)
